@@ -1,20 +1,34 @@
-function make2DArray(cols, rows){
-  let arr = new Array(rows)
-  for (let i = 0; i<arr.length; i++){
-    arr[i] = new Array(cols).fill(0);
-  }
-  return arr;
+function make2DArray(cols, rows) {
+	let arr = new Array(rows);
+	for (let i = 0; i < arr.length; i++) {
+		arr[i] = new Array(cols).fill(0);
+	}
+	return arr;
 }
 
-function isFull(){
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      if (grid[i][j] === 0) {
-        return false; // Found an empty cell
-      }
-    }
-  }
-  return true; // All cells are non-zero
+function isFull() {
+	for (let i = 0; i < rows; i++) {
+		for (let j = 0; j < cols; j++) {
+			if (grid[i][j] === 0) {
+				return false; // Found an empty cell
+			}
+		}
+	}
+	return true; // All cells are non-zero
+}
+
+function resetCanvas() {
+	if (isFull() && !resetPending) {
+		resetPending = true;
+
+		setTimeout(() => {
+			grid = make2DArray(cols, rows);
+			console.log("Grid reset!");
+			num_sand = 0;
+			c = newColor();
+			resetPending = false;
+		}, 1000);
+	}
 }
 
 /*
@@ -27,7 +41,7 @@ function isFull(){
 */
 
 let grid;
-let w = 10; 
+let w = 10;
 let cols, rows;
 let c;
 let rand;
@@ -40,74 +54,69 @@ let resetPending = false; // global flag
   Create a 2D array populated with 0s
 */
 function setup() {
-  createCanvas(600, 800);
-  c = color(250);
-  cols = width/w;
-  rows = height/w;
-  grid = make2DArray(cols, rows)
-
+	createCanvas(600, 800);
+	c = color(250);
+	cols = width / w;
+	rows = height / w;
+	grid = make2DArray(cols, rows);
 }
 
-function newColor(){
-  let r = Math.floor(Math.random() * 254 + 1);
-  let g = Math.floor(Math.random() * 254 + 1);
-  let b = Math.floor(Math.random() * 254 + 1);
-  return color(r, g, b);
+// Generates a random color
+function newColor() {
+	let r = Math.floor(Math.random() * 254 + 1);
+	let g = Math.floor(Math.random() * 254 + 1);
+	let b = Math.floor(Math.random() * 254 + 1);
+	return color(r, g, b);
 }
 
-function mouseDragged(){
-  num_sand +=1;
-  if (num_sand === 500){
-    c = newColor();
-    num_sand = 0;
-  }
-  let col = floor(mouseX / w);
-  let row = floor(mouseY / w);
+function mouseDragged() {
+	num_sand += 1;
+	if (num_sand === 500) {
+		c = newColor();
+		num_sand = 0;
+	}
 
-  // If the unit is not already sand, then add sand
-  if (grid[row][col] === 0){
-    grid[row][col] = c;
-  }
-  
+	// Get mouse coordinates
+	let col = floor(mouseX / w);
+	let row = floor(mouseY / w);
+
+	// Check bounds horizontally and vertically
+	if (row < rows && row >= 0 && col < cols && col >= 0) {
+		// To prevent adding new sand to already existing sand
+		if (grid[row][col] === 0) {
+			grid[row][col] = c;
+		}
+	}
 }
 
 function draw() {
-  if (isFull() && !resetPending){
-    resetPending = true;
-    setTimeout(() => {
-      grid = make2DArray(cols, rows);
-      console.log("Grid reset!");
-      num_sand = 0;
-      c = newColor();
-      resetPending = false;
-    }, 1000);
-  }
-  
-  background(color(135, 206, 255));
+	//Will only reset if sand fills canvas
+	resetCanvas();
+	background(color(135, 206, 255));
+	noStroke();
 
-  for (let i = 0; i < rows; i++){
-    for (let j=0; j < cols; j++){
-      noStroke() // Remove grid lines
+	for (let i = 0; i < rows; i++) {
+		for (let j = 0; j < cols; j++) {
+			// If there is a sand particle
+			if (grid[i][j] !== 0) {
+				fill(grid[i][j]);
+			} else {
+				// There is no sand particle, keep background color
+				fill(color(135, 206, 255)); // Sky blue
+			}
 
-      // If there is a sand particle
-      if (grid[i][j] !== 0){
-        fill(grid[i][j]);
-      // There is no sand particle, keep background color
-      } else{
-        fill(color(135, 206, 255)) // Sky blue
-      }
-      let x = j*w;
-      let y = i*w;
-      square(x, y, w);
-    }
-  }
+			let x = j * w;
+			let y = i * w;
+			square(x, y, w);
+		}
+	}
 
-  // 0 = black, 1 = white
-  let nextGrid = make2DArray(cols, rows);
-  for (let i = 0; i < rows; i++){
-    for (let j = 0; j < cols; j++){
-      let state = grid[i][j];
-      /*
+	// 0 = black, 1 = white
+	let nextGrid = make2DArray(cols, rows);
+	for (let i = 0; i < rows; i++) {
+		for (let j = 0; j < cols; j++) {
+			let state = grid[i][j];
+			/*
       if the state is 1
         if the unit below is not out of bounds and air
           go down
@@ -120,21 +129,25 @@ function draw() {
         else
           There's no where we can slide to, we stay the same
       */
-      if(state !== 0){
-        if((i+1) < rows && grid[i+1][j] === 0){
-          nextGrid[i+1][j] = state;
-        } else if ((i+1) < rows && grid[i+1][j+1] === 0 && grid[i+1][j-1] === 0){
-          rand = Math.random() < 0.5 ? -1 : 1;
-          nextGrid[i+1][j+rand] = state;
-        } else if ((i+1) < rows && grid[i+1][j+1] === 0){
-          nextGrid[i+1][j+1] = state;
-        } else if ((i+1) < rows && grid[i+1][j-1] === 0){
-          nextGrid[i+1][j-1] = state;
-        } else {
-          nextGrid[i][j] = state;
-        } 
-      }
-    }
-  }
-  grid = nextGrid;
+			if (state !== 0) {
+				if (i + 1 < rows && grid[i + 1][j] === 0) {
+					nextGrid[i + 1][j] = state;
+				} else if (
+					i + 1 < rows &&
+					grid[i + 1][j + 1] === 0 &&
+					grid[i + 1][j - 1] === 0
+				) {
+					rand = Math.random() < 0.5 ? -1 : 1;
+					nextGrid[i + 1][j + rand] = state;
+				} else if (i + 1 < rows && grid[i + 1][j + 1] === 0) {
+					nextGrid[i + 1][j + 1] = state;
+				} else if (i + 1 < rows && grid[i + 1][j - 1] === 0) {
+					nextGrid[i + 1][j - 1] = state;
+				} else {
+					nextGrid[i][j] = state;
+				}
+			}
+		}
+	}
+	grid = nextGrid;
 }
