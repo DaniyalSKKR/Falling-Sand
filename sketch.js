@@ -41,12 +41,13 @@ function resetCanvas() {
 */
 
 let grid;
-let w = 10;
+let w = 5;
 let cols, rows;
 let c;
 let rand;
 let num_sand = 0;
 let resetPending = false; // global flag
+let halfBrush = 1;
 
 /*
   Start with our default color
@@ -54,7 +55,9 @@ let resetPending = false; // global flag
   Create a 2D array populated with 0s
 */
 function setup() {
-	createCanvas(600, 800);
+	canvas = createCanvas(600, 800);
+	canvas.parent("canvas-container");
+	canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2);
 	c = color(250);
 	cols = width / w;
 	rows = height / w;
@@ -80,11 +83,16 @@ function mouseDragged() {
 	let col = floor(mouseX / w);
 	let row = floor(mouseY / w);
 
-	// Check bounds horizontally and vertically
-	if (row < rows && row >= 0 && col < cols && col >= 0) {
-		// To prevent adding new sand to already existing sand
-		if (grid[row][col] === 0) {
-			grid[row][col] = c;
+	for (let i = -halfBrush; i <= halfBrush; i++) {
+		for (let j = -halfBrush; j <= halfBrush; j++) {
+			if (random(1) < 0.75) {
+				if (row + i < rows && row + i >= 0 && col + j < cols && col + j >= 0) {
+					// To prevent adding new sand to already existing sand
+					if (grid[row + i][col + j] === 0) {
+						grid[row + i][col + j] = c;
+					}
+				}
+			}
 		}
 	}
 }
