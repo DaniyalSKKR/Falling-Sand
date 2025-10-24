@@ -1,7 +1,7 @@
-function make2DArray(cols, rows) {
+function make2DArray(cols, rows, base = 0) {
 	let arr = new Array(rows);
 	for (let i = 0; i < arr.length; i++) {
-		arr[i] = new Array(cols).fill(0);
+		arr[i] = new Array(cols).fill(base);
 	}
 	return arr;
 }
@@ -48,6 +48,7 @@ let rand;
 let num_sand = 0;
 let resetPending = false; // global flag
 let halfBrush = 1;
+let gravity = 0.25;
 
 /*
   Start with our default color
@@ -62,6 +63,7 @@ function setup() {
 	cols = width / w;
 	rows = height / w;
 	grid = make2DArray(cols, rows);
+	velocityGrid = make2DArray(cols, rows, 1);
 }
 
 // Generates a random color
@@ -121,12 +123,15 @@ function draw() {
 
 	// 0 = black, 1 = white
 	let nextGrid = make2DArray(cols, rows);
+	let nextVelocity = make2DArray(cols, rows, 1);
 	for (let i = 0; i < rows; i++) {
 		for (let j = 0; j < cols; j++) {
 			let state = grid[i][j];
+			let velocity = velocityGrid[i][j] + gravity;
+			let spot = Math.floor(i + velocity);
 			/*
-      if the state is 1
-        if the unit below is not out of bounds and air
+      if the state is sand
+        if the unit below is not out of bounds and is in the air
           go down
         else if the unit below to the left and right are not out of bounds and are air
             randomly go in either direction
@@ -138,8 +143,32 @@ function draw() {
           There's no where we can slide to, we stay the same
       */
 			if (state !== 0) {
-				if (i + 1 < rows && grid[i + 1][j] === 0) {
+				if (spot < rows && grid[spot][j] === 0) {
+					nextGrid[spot][j] = state;
+					nextVelocity[spot][j] = velocity;
+				} else if (i + 1 < rows && grid[i + 1][j] === 0) {
 					nextGrid[i + 1][j] = state;
+					nextVelocity[i + 1][j] = velocity;
+				} else if (spot < rows && grid[spot][j + 1] === 0) {
+					nextGrid[spot][j + 1] = state;
+					nextVelocity[spot][j + 1] = velocity;
+				} else if (i + 1 < rows && grid[i + 1][j + 1] === 0) {
+					nextGrid[i + 1][j + 1] = state;
+					nextVelocity[i + 1][j + 1] = velocity;
+				} else if (spot < rows && grid[spot][j - 1] === 0) {
+					nextGrid[spot][j - 1] = state;
+					nextVelocity[spot][j - 1] = velocity;
+				} else if (i + 1 < rows && grid[i + 1][j - 1] === 0) {
+					nextGrid[i + 1][j - 1] = state;
+					nextVelocity[i + 1][j - 1] = velocity;
+				} else if (
+					spot < rows &&
+					grid[spot][j + 1] === 0 &&
+					grid[spot][j - 1] === 0
+				) {
+					rand = Math.random() < 0.5 ? -1 : 1;
+					nextGrid[spot][j + rand] = state;
+					nextVelocity[spot][j + rand] = velocity;
 				} else if (
 					i + 1 < rows &&
 					grid[i + 1][j + 1] === 0 &&
@@ -147,15 +176,14 @@ function draw() {
 				) {
 					rand = Math.random() < 0.5 ? -1 : 1;
 					nextGrid[i + 1][j + rand] = state;
-				} else if (i + 1 < rows && grid[i + 1][j + 1] === 0) {
-					nextGrid[i + 1][j + 1] = state;
-				} else if (i + 1 < rows && grid[i + 1][j - 1] === 0) {
-					nextGrid[i + 1][j - 1] = state;
+					nextVelocity[i + 1][j + rand] = velocity;
 				} else {
 					nextGrid[i][j] = state;
+					nextVelocity[i][j] = 1;
 				}
 			}
 		}
 	}
 	grid = nextGrid;
+	velocityGrid = nextVelocity;
 }
