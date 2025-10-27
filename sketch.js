@@ -76,7 +76,7 @@ function newColor() {
 
 function mouseDragged() {
 	num_sand += 1;
-	if (num_sand === 500) {
+	if (num_sand === 150) {
 		c = newColor();
 		num_sand = 0;
 	}
@@ -146,21 +146,12 @@ function draw() {
 				if (spot < rows && grid[spot][j] === 0) {
 					nextGrid[spot][j] = state;
 					nextVelocity[spot][j] = velocity;
-				} else if (i + 1 < rows && grid[i + 1][j] === 0) {
-					nextGrid[i + 1][j] = state;
-					nextVelocity[i + 1][j] = velocity;
 				} else if (spot < rows && grid[spot][j + 1] === 0) {
 					nextGrid[spot][j + 1] = state;
 					nextVelocity[spot][j + 1] = velocity;
-				} else if (i + 1 < rows && grid[i + 1][j + 1] === 0) {
-					nextGrid[i + 1][j + 1] = state;
-					nextVelocity[i + 1][j + 1] = velocity;
 				} else if (spot < rows && grid[spot][j - 1] === 0) {
 					nextGrid[spot][j - 1] = state;
 					nextVelocity[spot][j - 1] = velocity;
-				} else if (i + 1 < rows && grid[i + 1][j - 1] === 0) {
-					nextGrid[i + 1][j - 1] = state;
-					nextVelocity[i + 1][j - 1] = velocity;
 				} else if (
 					spot < rows &&
 					grid[spot][j + 1] === 0 &&
@@ -169,14 +160,6 @@ function draw() {
 					rand = Math.random() < 0.5 ? -1 : 1;
 					nextGrid[spot][j + rand] = state;
 					nextVelocity[spot][j + rand] = velocity;
-				} else if (
-					i + 1 < rows &&
-					grid[i + 1][j + 1] === 0 &&
-					grid[i + 1][j - 1] === 0
-				) {
-					rand = Math.random() < 0.5 ? -1 : 1;
-					nextGrid[i + 1][j + rand] = state;
-					nextVelocity[i + 1][j + rand] = velocity;
 				} else {
 					nextGrid[i][j] = state;
 					nextVelocity[i][j] = 1;
