@@ -25,7 +25,7 @@ function resetCanvas() {
 			grid = make2DArray(cols, rows);
 			console.log("Grid reset!");
 			num_sand = 0;
-			c = newColor();
+			// c = newColor();
 			resetPending = false;
 		}, 1000);
 	}
@@ -50,6 +50,9 @@ let resetPending = false; // global flag
 let halfBrush = 1;
 let gravity = 0.25;
 
+window.brushColor = [250, 0, 0];
+let brushColor;
+
 /*
   Start with our default color
   Set cols and rows
@@ -58,8 +61,9 @@ let gravity = 0.25;
 function setup() {
 	canvas = createCanvas(600, 800);
 	canvas.parent("canvas-container");
-	canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2);
-	c = color(250);
+	// canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2);
+	c = brushColor;
+	brushColor = color(r, g, b) || color(250);
 	cols = width / w;
 	rows = height / w;
 	grid = make2DArray(cols, rows);
@@ -67,19 +71,19 @@ function setup() {
 }
 
 // Generates a random color
-function newColor() {
-	let r = Math.floor(Math.random() * 254 + 1);
-	let g = Math.floor(Math.random() * 254 + 1);
-	let b = Math.floor(Math.random() * 254 + 1);
-	return color(r, g, b);
-}
+// function newColor() {
+// 	let r = Math.floor(Math.random() * 254 + 1);
+// 	let g = Math.floor(Math.random() * 254 + 1);
+// 	let b = Math.floor(Math.random() * 254 + 1);
+// 	return color(r, g, b);
+// }
 
 function mouseDragged() {
 	num_sand += 1;
-	if (num_sand === 150) {
-		c = newColor();
-		num_sand = 0;
-	}
+	// if (num_sand === 150) {
+	// 	c = brushColor;
+	// 	num_sand = 0;
+	// }
 
 	// Get mouse coordinates
 	let col = floor(mouseX / w);
@@ -91,7 +95,7 @@ function mouseDragged() {
 				if (row + i < rows && row + i >= 0 && col + j < cols && col + j >= 0) {
 					// To prevent adding new sand to already existing sand
 					if (grid[row + i][col + j] === 0) {
-						grid[row + i][col + j] = c;
+						grid[row + i][col + j] = color(...window.brushColor);
 					}
 				}
 			}
