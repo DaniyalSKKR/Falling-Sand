@@ -50,6 +50,10 @@ let resetPending = false; // global flag
 let halfBrush = 1;
 let gravity = 0.25;
 
+// Reusable arrays for optimization
+let nextGrid;
+let nextVelocity;
+
 window.brushColor = [250, 0, 0];
 let brushColor;
 
@@ -68,6 +72,9 @@ function setup() {
 	rows = height / w;
 	grid = make2DArray(cols, rows);
 	velocityGrid = make2DArray(cols, rows, 1);
+	// Initialize reusable arrays
+	nextGrid = make2DArray(cols, rows);
+	nextVelocity = make2DArray(cols, rows, 1);
 }
 
 // Generates a random color
@@ -125,27 +132,32 @@ function draw() {
 		}
 	}
 
-	// 0 = black, 1 = white
-	let nextGrid = make2DArray(cols, rows);
-	let nextVelocity = make2DArray(cols, rows, 1);
+	// Clear nextGrid and nextVelocity for reuse
 	for (let i = 0; i < rows; i++) {
+		for (let j = 0; j < cols; j++) {
+			nextGrid[i][j] = 0;
+			nextVelocity[i][j] = 1;
+		}
+	}
+
+	for (let i = rows - 1; i >= 0; i--) {
 		for (let j = 0; j < cols; j++) {
 			let state = grid[i][j];
 			let velocity = velocityGrid[i][j] + gravity;
 			let spot = Math.floor(i + velocity);
 			/*
-      if the state is sand
-        if the unit below is not out of bounds and is in the air
-          go down
-        else if the unit below to the left and right are not out of bounds and are air
-            randomly go in either direction
-        else if ...
-          go right
-        else if ...
-          go left
-        else
-          There's no where we can slide to, we stay the same
-      */
+	  if the state is sand
+		if the unit below is not out of bounds and is in the air
+		  go down
+		else if the unit below to the left and right are not out of bounds and are air
+			randomly go in either direction
+		else if ...
+		  go right
+		else if ...
+		  go left
+		else
+		  There's no where we can slide to, we stay the same
+	  */
 			if (state !== 0) {
 				if (spot < rows && grid[spot][j] === 0) {
 					nextGrid[spot][j] = state;
@@ -171,6 +183,11 @@ function draw() {
 			}
 		}
 	}
+	// Swap references for next frame
+	let tempGrid = grid;
+	let tempVelocity = velocityGrid;
 	grid = nextGrid;
 	velocityGrid = nextVelocity;
+	nextGrid = tempGrid;
+	nextVelocity = tempVelocity;
 }
