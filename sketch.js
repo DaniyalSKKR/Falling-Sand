@@ -59,7 +59,7 @@ let brushColor;
   Create a 2D array populated with 0s
 */
 function setup() {
-	canvas = createCanvas(600, 800);
+	canvas = createCanvas(700, 800);
 	canvas.parent("canvas-container");
 	// canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2);
 	c = brushColor;

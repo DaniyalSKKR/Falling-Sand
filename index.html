@@ -18,32 +18,38 @@
 </head>
 
 <body style="background-color: black;">
-  <div class="container-fluid mt-5 items">
-    <div class="d-flex justify-content-center flex-row gap-3">
-      <div class="" id="canvas-container">
-        <!-- ... -->
-      </div>
-      <div class="">
-        <div class="wrap">
-          <div class="half">
-            <div class="colorPicker"></div>
-          </div>
-          <div class="half readout">
-            <!-- <span class="title">Selected Color:</span> -->
-            <div id="values"></div>
-            <input id="hexInput" class="rounded"></input>
+  <div class="main-bg">
+    <div class="container py-2">
+      <div class="row justify-content-center align-items-center g-4">
+        <div class="col-lg-auto">
+          <div class="card shadow-lg bg-dark text-light border-0" style="width: 740px;">
+            <div class="py-4 d-flex justify-content-center" id="canvas-container">
+              <!-- Canvas will be rendered here -->
+            </div>
           </div>
         </div>
-        <!-- <div class="text-center mt-3">
-          <span class="fw-bold">Selected color:</span>
-          <span id="selectedColorText" class="ms-2 text-info">None</span>
-        </div> -->
+        <div class="col-lg-2 align-self-start">
+          <div class="card shadow-lg border-0 bg-dark text-light" style="width: 180px;">
+            <div class="card-body">
+              <h5 class="card-title mb-3 text-center fw-bold">Brush Color</h5>
+              <div class="d-flex flex-column align-items-center gap-3">
+                <div class="colorPicker"></div>
+                <div class="readout text-center">
+                  <div id="values"></div>
+                  <input id="hexInput" class="form-control text-center" placeholder="#RRGGBB"></input>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
   <script src="sketch.js"></script>
 
+  <footer class="footer bg-transparent text-center text-muted">
+    <small>Falling Sand &copy; 2026 | Created by Daniyal</small>
+  </footer>
 </body>
 
 </html>
@@ -60,11 +66,11 @@
   let hexInput = document.getElementById("hexInput");
 
   colorPicker.on(["color:init", "color:change"], function (color) {
-    values.innerHTML = [
-      // "hex: " + color.hexString,
-      "rgb: " + color.rgbString,
-      "hsl: " + color.hslString,
-    ].join("<br>");
+    // values.innerHTML = [
+    //   "hex: " + color.hexString,
+    //   "rgb: " + color.rgbString,
+    //   "hsl: " + color.hslString,
+    // ].join("<br>");
 
     hexInput.value = color.hexString;
 
