@@ -7,11 +7,38 @@ function make2DArray(cols, rows, base = 0) {
 }
 
 function resetCanvas() {
-	grid = make2DArray(cols, rows);
-	console.log("Grid reset!");
-	num_sand = 0;
+	if (resetPending) return;
+	resetPending = true;
+	const interval = setInterval(() => {
+		// Shift all rows down by one
+		for (let row = rows - 1; row > 0; row--) {
+			for (let col = 0; col < cols; col++) {
+				grid[row][col] = grid[row - 1][col];
+			}
+		}
+		// Clear the top row
+		for (let col = 0; col < cols; col++) {
+			grid[0][col] = 0;
+		}
+		// Check if grid is empty
+		let empty = true;
+		for (let row = 0; row < rows; row++) {
+			for (let col = 0; col < cols; col++) {
+				if (grid[row][col] !== 0) {
+					empty = false;
+					break;
+				}
+			}
+			if (!empty) break;
+		}
+		if (empty) {
+			clearInterval(interval);
+			resetPending = false;
+			num_sand = 0;
+			console.log("Grid drained!");
+		}
+	}, 30); // Adjust delay for speed
 }
-
 /*
   Grid  will be our 2D Array
   w will determine each square/unit of sand size
@@ -28,7 +55,7 @@ let c;
 let rand;
 let num_sand = 0;
 let resetPending = false; // global flag
-let halfBrush = 1;
+let halfBrush = 2;
 let gravity = 0.25;
 
 // Reusable arrays for optimization
