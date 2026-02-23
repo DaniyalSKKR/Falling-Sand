@@ -53,6 +53,11 @@ body {
 	color: #222;
 }
 
+#resetButton {
+	background: #5f1a1a;
+	color: white;
+}
+
 .footer {
 	background: transparent;
 	letter-spacing: 0.5px;

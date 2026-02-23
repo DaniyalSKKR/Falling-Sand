@@ -6,29 +6,10 @@ function make2DArray(cols, rows, base = 0) {
 	return arr;
 }
 
-function isFull() {
-	for (let i = 0; i < rows; i++) {
-		for (let j = 0; j < cols; j++) {
-			if (grid[i][j] === 0) {
-				return false; // Found an empty cell
-			}
-		}
-	}
-	return true; // All cells are non-zero
-}
-
 function resetCanvas() {
-	if (isFull() && !resetPending) {
-		resetPending = true;
-
-		setTimeout(() => {
-			grid = make2DArray(cols, rows);
-			console.log("Grid reset!");
-			num_sand = 0;
-			// c = newColor();
-			resetPending = false;
-		}, 1000);
-	}
+	grid = make2DArray(cols, rows);
+	console.log("Grid reset!");
+	num_sand = 0;
 }
 
 /*
@@ -112,7 +93,6 @@ function mouseDragged() {
 
 function draw() {
 	//Will only reset if sand fills canvas
-	resetCanvas();
 	background(color(135, 206, 255));
 	noStroke();
 
