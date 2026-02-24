@@ -49,7 +49,7 @@ function resetCanvas() {
 */
 
 let grid;
-let w = 5;
+let w = 6;
 let cols, rows;
 let c;
 let rand;
@@ -71,7 +71,7 @@ let brushColor;
   Create a 2D array populated with 0s
 */
 function setup() {
-	canvas = createCanvas(700, 800);
+	canvas = createCanvas(690, 804);
 	canvas.parent("canvas-container");
 	// canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2);
 	c = brushColor;
@@ -93,22 +93,14 @@ function setup() {
 // 	return color(r, g, b);
 // }
 
-function mouseDragged() {
+function addSandAtMouse() {
 	num_sand += 1;
-	// if (num_sand === 150) {
-	// 	c = brushColor;
-	// 	num_sand = 0;
-	// }
-
-	// Get mouse coordinates
 	let col = floor(mouseX / w);
 	let row = floor(mouseY / w);
-
 	for (let i = -halfBrush; i <= halfBrush; i++) {
 		for (let j = -halfBrush; j <= halfBrush; j++) {
 			if (random(1) < 0.75) {
 				if (row + i < rows && row + i >= 0 && col + j < cols && col + j >= 0) {
-					// To prevent adding new sand to already existing sand
 					if (grid[row + i][col + j] === 0) {
 						grid[row + i][col + j] = color(...window.brushColor);
 					}
@@ -119,6 +111,16 @@ function mouseDragged() {
 }
 
 function draw() {
+	// Allow sand to fall even if mouse is still, as long as mouse is pressed
+	if (
+		mouseIsPressed &&
+		mouseX >= 0 &&
+		mouseX < width &&
+		mouseY >= 0 &&
+		mouseY < height
+	) {
+		addSandAtMouse();
+	}
 	//Will only reset if sand fills canvas
 	background(color(135, 206, 255));
 	noStroke();
