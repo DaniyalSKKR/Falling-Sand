@@ -169,12 +169,6 @@ function draw() {
 				if (spot < rows && grid[spot][j] === 0) {
 					nextGrid[spot][j] = state;
 					nextVelocity[spot][j] = velocity;
-				} else if (spot < rows && grid[spot][j + 1] === 0) {
-					nextGrid[spot][j + 1] = state;
-					nextVelocity[spot][j + 1] = velocity;
-				} else if (spot < rows && grid[spot][j - 1] === 0) {
-					nextGrid[spot][j - 1] = state;
-					nextVelocity[spot][j - 1] = velocity;
 				} else if (
 					spot < rows &&
 					grid[spot][j + 1] === 0 &&
@@ -183,6 +177,12 @@ function draw() {
 					rand = Math.random() < 0.5 ? -1 : 1;
 					nextGrid[spot][j + rand] = state;
 					nextVelocity[spot][j + rand] = velocity;
+				} else if (spot < rows && grid[spot][j + 1] === 0) {
+					nextGrid[spot][j + 1] = state;
+					nextVelocity[spot][j + 1] = velocity;
+				} else if (spot < rows && grid[spot][j - 1] === 0) {
+					nextGrid[spot][j - 1] = state;
+					nextVelocity[spot][j - 1] = velocity;
 				} else {
 					nextGrid[i][j] = state;
 					nextVelocity[i][j] = 1;
