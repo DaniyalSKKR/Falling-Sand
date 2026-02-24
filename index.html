@@ -11,6 +11,7 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
   <script src="libraries/p5.min.js"></script>
   <script src="libraries/p5.sound.min.js"></script>
   <script src="iro.min.js"></script>
@@ -45,6 +46,8 @@
             <div class="card-body">
               <h5 class="card-title mb-3 text-center fw-bold">Controls</h5>
               <div class="d-flex flex-column align-items-center gap-2">
+                <button class="btn btn-secondary w-100 border-0" id="downloadButton"><i
+                    class="bi bi-box-arrow-down align-middle pe-1"></i> Save Artwork</button>
                 <button class="btn btn-primary w-100 border-0" id="resetButton" onclick="resetCanvas()">Reset</button>
               </div>
             </div>
@@ -52,40 +55,59 @@
         </div>
       </div>
     </div>
-    <script src="sketch.js"></script>
 
     <footer class="footer bg-transparent text-center text-muted">
       <small>Falling Sand &copy; 2026 | Created by Daniyal</small>
     </footer>
+
+    <script src="sketch.js"></script>
+
+    <script>
+      document.getElementById('downloadButton').addEventListener('click', function () {
+        if (window.canvas && window.canvas.elt) {
+          window.canvas.elt.toBlob(function (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'falling_sand_artwork.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          });
+        }
+      });
+    </script>
+
+    <script>
+      let colorPicker = new iro.ColorPicker(".colorPicker", {
+        // Option guide: https://iro.js.org/guide.html#color-picker-options
+        width: 140,
+        color: "rgb(255, 0, 0)",
+        borderWidth: 0,
+        borderColor: "#fff",
+      });
+
+      let values = document.getElementById("values");
+      let hexInput = document.getElementById("hexInput");
+
+      colorPicker.on(["color:init", "color:change"], function (color) {
+        // values.innerHTML = [
+        //   "hex: " + color.hexString,
+        //   "rgb: " + color.rgbString,
+        //   "hsl: " + color.hslString,
+        // ].join("<br>");
+
+        hexInput.value = color.hexString;
+
+        ({ r, g, b } = color.rgb);
+        window.brushColor = [r, g, b];
+      });
+
+      hexInput.addEventListener('change', function () {
+        colorPicker.color.hexString = this.value;
+      });
+    </script>
 </body>
 
 </html>
-<script>
-  let colorPicker = new iro.ColorPicker(".colorPicker", {
-    // Option guide: https://iro.js.org/guide.html#color-picker-options
-    width: 140,
-    color: "rgb(255, 0, 0)",
-    borderWidth: 0,
-    borderColor: "#fff",
-  });
-
-  let values = document.getElementById("values");
-  let hexInput = document.getElementById("hexInput");
-
-  colorPicker.on(["color:init", "color:change"], function (color) {
-    // values.innerHTML = [
-    //   "hex: " + color.hexString,
-    //   "rgb: " + color.rgbString,
-    //   "hsl: " + color.hslString,
-    // ].join("<br>");
-
-    hexInput.value = color.hexString;
-
-    ({ r, g, b } = color.rgb);
-    window.brushColor = [r, g, b];
-  });
-
-  hexInput.addEventListener('change', function () {
-    colorPicker.color.hexString = this.value;
-  });
-</script>
