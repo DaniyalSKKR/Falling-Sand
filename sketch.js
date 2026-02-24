@@ -1,3 +1,8 @@
+function updateBrushSize() {
+	const brushSizeInput = document.getElementById("brushSize");
+	halfBrush = parseInt(brushSizeInput.value) + 1;
+}
+
 function make2DArray(cols, rows, base = 0) {
 	let arr = new Array(rows);
 	for (let i = 0; i < arr.length; i++) {
@@ -55,7 +60,7 @@ let c;
 let rand;
 let num_sand = 0;
 let resetPending = false; // global flag
-let halfBrush = 2;
+let halfBrush = 1;
 let gravity = 0.25;
 
 // Reusable arrays for optimization

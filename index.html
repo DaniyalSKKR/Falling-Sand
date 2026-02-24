@@ -33,6 +33,7 @@
           <div class="card shadow-lg border-0 bg-dark text-light" style="width: 180px;">
             <div class="card-body">
               <h5 class="card-title mb-3 text-center fw-bold">Brush Color</h5>
+              <hr class="mb-3" />
               <div class="d-flex flex-column align-items-center gap-3">
                 <div class="colorPicker"></div>
                 <div class="readout text-center">
@@ -45,7 +46,16 @@
           <div class="card shadow-lg border-0 bg-dark text-light mt-4" style="width: 180px;">
             <div class="card-body">
               <h5 class="card-title mb-3 text-center fw-bold">Controls</h5>
+              <hr class="mb-3" />
               <div class="d-flex flex-column align-items-center gap-2">
+                <!-- <label class="form-label" for="customRange1">Example range</label> -->
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-brush fs-10"></i>
+                  <input type="range" class="form-range flex-grow-1" min="0" max="5" id="brushSize"
+                    onchange="updateBrushSize()" />
+                  <i class="bi bi-brush fs-5"></i>
+                </div>
+                <br>
                 <button class="btn btn-secondary w-100 border-0" id="downloadButton"><i
                     class="bi bi-box-arrow-down align-middle pe-1"></i> Save Artwork</button>
                 <button class="btn btn-primary w-100 border-0" id="resetButton" onclick="resetCanvas()">Reset</button>
