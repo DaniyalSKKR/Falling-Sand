@@ -56,6 +56,22 @@
                   <i class="bi bi-brush fs-5"></i>
                 </div>
                 <br>
+                <div class="d-flex align-items-center gap-1 w-100 mb-2">
+                  <i class="bi bi-arrow-down fs-10"></i>
+                  <select class="form-select form-select-sm flex-grow-1" id="gravitySelect" style="max-width: 90px;">
+                    <option value="0.01">1</option>
+                    <option value="0.05">2</option>
+                    <option value="0.10">3</option>
+                    <option value="0.15" selected>4</option>
+                    <option value="0.2">5</option>
+                    <option value="0.25">6</option>
+                    <option value="0.35">7</option>
+                  </select>
+                  <button class="btn btn-sm btn-light ms-2 p-1" id="defaultGravityButton"
+                    title="Reset gravity to default">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                  </button>
+                </div>
                 <button class="btn btn-secondary w-100 border-0" id="downloadButton"><i
                     class="bi bi-box-arrow-down align-middle pe-1"></i> Save Artwork</button>
                 <button class="btn btn-primary w-100 border-0" id="resetButton" onclick="resetCanvas()">Reset</button>
@@ -75,22 +91,33 @@
     <script>
       window.addEventListener('DOMContentLoaded', function () {
         document.getElementById('brushSize').value = 0;
-        updateBrushSize();
-      });
+        document.getElementById('gravitySelect').value = '0.15';
 
-      document.getElementById('downloadButton').addEventListener('click', function () {
-        if (window.canvas && window.canvas.elt) {
-          window.canvas.elt.toBlob(function (blob) {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'falling_sand_artwork.png';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          });
-        }
+        updateBrushSize();
+        updateGravity();
+
+        document.getElementById('defaultGravityButton').addEventListener('click', function () {
+          document.getElementById('gravitySelect').value = '0.15';
+          updateGravity();
+        });
+        document.getElementById('gravitySelect').addEventListener('change', function () {
+          updateGravity();
+        });
+
+        document.getElementById('downloadButton').addEventListener('click', function () {
+          if (window.canvas && window.canvas.elt) {
+            window.canvas.elt.toBlob(function (blob) {
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'falling_sand_artwork.png';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+            });
+          }
+        });
       });
     </script>
 

@@ -3,6 +3,11 @@ function updateBrushSize() {
 	halfBrush = parseInt(brushSizeInput.value) + 1;
 }
 
+function updateGravity() {
+	const select = document.getElementById("gravitySelect");
+	gravity = parseFloat(select.value);
+}
+
 function make2DArray(cols, rows, base = 0) {
 	let arr = new Array(rows);
 	for (let i = 0; i < arr.length; i++) {
