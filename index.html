@@ -51,7 +51,7 @@
                 <!-- <label class="form-label" for="customRange1">Example range</label> -->
                 <div class="d-flex align-items-center gap-2">
                   <i class="bi bi-brush fs-10"></i>
-                  <input type="range" class="form-range flex-grow-1" min="0" max="5" id="brushSize"
+                  <input type="range" class="form-range flex-grow-1" min="0" max="5" value="0" id="brushSize"
                     onchange="updateBrushSize()" />
                   <i class="bi bi-brush fs-5"></i>
                 </div>
@@ -73,6 +73,11 @@
     <script src="sketch.js"></script>
 
     <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('brushSize').value = 0;
+        updateBrushSize();
+      });
+
       document.getElementById('downloadButton').addEventListener('click', function () {
         if (window.canvas && window.canvas.elt) {
           window.canvas.elt.toBlob(function (blob) {
